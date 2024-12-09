@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajes MQTT</title>
+    <script src="https://cdn.jsdelivr.net/npm/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
+    <script>
+        // Crear el cliente MQTT
+        var client = mqtt.connect('ws://test.mosquitto.org:8080');  // WebSocket MQTT para navegador
+
+        // Tema al que nos vamos a suscribir
+        var topic = 'test/topic';
+
+        // Cuando se conecta el cliente MQTT
+        client.on('connect', function () {
+            console.log('Conectado al broker MQTT');
+            client.subscribe(topic, function (err) {
+                if (!err) {
+                    console.log('Suscrito al tema:', topic);
+                }
+            });
+        });
+
+        
+        client.on('message', function (topic, message) {
+            
+            document.getElementById('messages').innerHTML = 'Mensaje recibido: ' + message.toString();
+        });
+
+        
+        function sendMessage() {
+            var message = document.getElementById('messageInput').value;  
+            if (message) {
+                client.publish(topic, message);  
+                console.log("Mensaje enviado: " + message);
+                document.getElementById('messageInput').value = '';  
+            } else {
+                alert("Escribe un mensaje antes de enviar.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Mensajes MQTT</h1>
+
+    
+    <div id="messages">Esperando mensajes...</div>
+
+    
+    <div>
+        <input type="text" id="messageInput" placeholder="Escribe tu mensaje aquí..." />
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+</body>
+</html>
+

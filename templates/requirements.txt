@@ -1,0 +1,6 @@
+flask
+flask-socketio
+paho-mqtt
+gevent
+gevent-websocket
+
